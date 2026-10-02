@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oklahoma Academic Standards for Computer Science: Standards Explorer</title>
+<style>
+:root{
+  --ink:#1c2530; --muted:#5b6672; --line:#d8dde3; --bg:#f6f7f9; --card:#ffffff;
+  --brand:#0b5d4b; --brand-ink:#ffffff; --brand-soft:#e3f1ed; --mark:#ffe58a;
+  --CS:#9b1c1c; --NI:#b4651b; --DA:#2f7d32; --AP:#17454f; --IC:#4b2e83;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font:16px/1.5 "Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--ink);background:var(--bg)}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid #1a73e8;outline-offset:2px}
+
+/* Header */
+.top{background:var(--brand);color:var(--brand-ink);padding:16px 20px}
+.top h1{margin:0;font-size:1.35rem;font-weight:700;letter-spacing:.1px}
+.top p{margin:2px 0 0;font-size:.9rem;opacity:.9}
+
+/* Layout */
+.app{display:grid;grid-template-columns:300px minmax(0,1fr);gap:20px;max-width:1280px;margin:0 auto;padding:18px 16px 40px;align-items:start}
+.side{position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px}
+.side h2{font-size:.95rem;margin:16px 0 6px;font-weight:700}
+.side h2:first-of-type{margin-top:0}
+.side .hint{font-size:.8rem;color:var(--muted);margin:0 0 6px}
+.sidehead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.sidehead strong{font-size:1.05rem}
+.linkbtn{background:none;border:0;color:var(--brand);text-decoration:underline;padding:2px 4px;font-size:.9rem}
+
+/* Search */
+.search{width:100%;padding:10px 12px;border:1px solid #aab3bd;border-radius:6px;background:#fff}
+.search:focus{border-color:#1a73e8}
+
+/* Grade chips */
+.bands{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid #aab3bd;background:#fff;border-radius:999px;padding:3px 11px;font-size:.88rem;min-height:30px}
+.chip[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:#fff}
+.chip.band{border-radius:6px;font-weight:600;background:var(--brand-soft);border-color:#b7d8cf}
+.chip.band[aria-pressed="true"]{background:var(--brand);color:#fff}
+.chip .n,.opt .n{font-size:.75rem;opacity:.75;margin-left:5px}
+.chip.zero:not([aria-pressed="true"]){opacity:.4}
+
+/* Checkbox options */
+.opt{display:flex;align-items:flex-start;gap:8px;padding:3px 0;font-size:.92rem;cursor:pointer}
+.opt input{margin-top:5px;accent-color:var(--brand)}
+.opt.zero{opacity:.45}
+.opt .n{margin-left:auto;padding-left:6px}
+.cgroup{margin:6px 0 10px;border-left:4px solid var(--c);padding-left:10px}
+.cgroup .chead{font-weight:700}
+.cgroup .subs{margin-left:22px}
+
+/* Toolbar */
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+.bar .count{font-weight:700;margin-right:auto}
+.btn{border:1px solid #aab3bd;background:#fff;border-radius:6px;padding:6px 12px;font-size:.9rem}
+.btn:hover{background:#eef1f4}
+.btn.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.seg{display:inline-flex;border:1px solid #aab3bd;border-radius:6px;overflow:hidden;background:#fff}
+.seg button{border:0;background:none;padding:6px 12px;font-size:.9rem}
+.seg button[aria-pressed="true"]{background:var(--brand);color:#fff}
+.mobile-only{display:none}
+
+/* Active filters */
+.active{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.pill{display:inline-flex;align-items:center;gap:6px;background:var(--brand-soft);border:1px solid #b7d8cf;border-radius:999px;padding:2px 4px 2px 10px;font-size:.85rem}
+.pill button{border:0;background:#fff;border-radius:50%;width:20px;height:20px;line-height:18px;padding:0;font-size:.85rem}
+
+/* Group headings */
+.ghead{margin:22px 0 8px;font-size:1.1rem;font-weight:700;border-bottom:2px solid var(--gc,var(--brand));padding-bottom:4px;color:var(--gc,var(--ink))}
+.ghead small{font-weight:400;color:var(--muted);margin-left:6px}
+.shead{margin:14px 0 6px;font-size:.95rem;font-weight:700;color:var(--ink)}
+.shead small{font-weight:400;color:var(--muted);margin-left:6px}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--c);border-radius:6px;padding:12px 14px;margin:0 0 10px}
+.card header{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:baseline}
+.card .id{font-weight:700;font-size:1.02rem;color:var(--c);font-variant-numeric:tabular-nums}
+.card .meta{font-size:.88rem;color:var(--muted)}
+.card .actions{margin-left:auto;display:flex;gap:6px}
+.card .act{border:1px solid #aab3bd;background:#fff;border-radius:6px;padding:2px 10px;font-size:.84rem}
+.card .act[aria-pressed="true"]{background:#fff4c2;border-color:#d4b200;font-weight:600}
+.card .act:hover{background:#eef1f4}
+.card p.text{margin:8px 0 8px;max-width:80ch}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{border:1px solid #c5ccd3;background:#f1f3f5;border-radius:4px;padding:1px 8px;font-size:.8rem}
+.tag:hover{background:#e2e7ec}
+.tag.sel{background:var(--brand);border-color:var(--brand);color:#fff}
+mark{background:var(--mark);padding:0 1px;border-radius:2px}
+.prog{margin-top:10px;border-top:1px dashed var(--line);padding-top:8px}
+.prog h4{margin:0 0 6px;font-size:.88rem;color:var(--muted);font-weight:600}
+.prog ol{list-style:none;margin:0;padding:0}
+.prog li{display:grid;grid-template-columns:96px 1fr;gap:8px;padding:5px 6px;border-radius:4px;font-size:.9rem}
+.prog li.cur{background:var(--brand-soft);font-weight:600}
+.prog li b{font-weight:700;color:var(--c)}
+.empty{background:#fff;border:1px dashed #aab3bd;border-radius:8px;padding:28px;text-align:center}
+.notes{margin-top:26px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:12px 16px;font-size:.9rem}
+.notes summary{font-weight:700;cursor:pointer}
+.notes li{margin:4px 0}
+
+@media (max-width:860px){
+  .app{grid-template-columns:1fr}
+  .side{position:static;max-height:none;display:none}
+  .side.open{display:block}
+  .mobile-only{display:inline-block}
+}
+@media print{
+  body{background:#fff}
+  .top p,.side,.bar,.active,.card .actions,.prog,.notes{display:none!important}
+  .app{display:block;padding:0}
+  .card{break-inside:avoid;border-color:#999}
+}
+@media (prefers-reduced-motion:no-preference){ .side{scroll-behavior:smooth} }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <h1>Oklahoma Academic Standards for Computer Science</h1>
+  <p>Standards Explorer. Search and filter all K–12 standards, pin the ones you need, and export them.</p>
+</div>
+
+<div class="app">
+  <aside class="side" id="side" aria-label="Filters">
+    <div class="sidehead"><strong>Filters</strong><button class="linkbtn" data-act="reset">Reset all</button></div>
+
+    <h2 id="h-search"><label for="q">Search</label></h2>
+    <input id="q" class="search" type="search" placeholder="Try &quot;debug&quot;, &quot;password&quot;, or K.AP.A.01" autocomplete="off">
+
+    <h2>Grade level</h2>
+    <p class="hint">K–8 and Level 1 are for all students. Level 2 is for students specializing in CS.</p>
+    <div class="bands" id="bands"></div>
+    <div class="chips" id="gradeChips"></div>
+
+    <h2>Concept and subconcept</h2>
+    <div id="subFilters"></div>
+
+    <h2>CS practice</h2>
+    <p class="hint">Shows standards connected to any selected practice.</p>
+    <div id="practiceFilters"></div>
+  </aside>
+
+  <main id="main" aria-live="polite">
+    <div class="bar">
+      <span class="count" id="count"></span>
+      <button class="btn mobile-only" data-act="toggleSide" id="sideBtn" aria-expanded="false" aria-controls="side">Show filters</button>
+      <div class="seg" role="group" aria-label="Sort by">
+        <button data-act="sort" data-v="concept" aria-pressed="true">Sort by concept</button>
+        <button data-act="sort" data-v="grade" aria-pressed="false">Sort by grade</button>
+      </div>
+      <button class="btn" data-act="pinnedOnly" id="pinnedBtn" aria-pressed="false">Pinned (0)</button>
+      <button class="btn" data-act="progAll" id="progBtn">Open all progressions</button>
+      <button class="btn" data-act="csvShown">Download CSV (shown)</button>
+      <button class="btn" data-act="csvPinned" id="csvPinnedBtn">Download CSV (pinned)</button>
+      <button class="btn" data-act="print">Print</button>
+      <button class="btn" data-act="clearPins" id="clearPinsBtn">Clear pins</button>
+    </div>
+    <div class="active" id="active"></div>
+    <div id="results"></div>
+
+    <details class="notes">
+      <summary>Notes about these standards</summary>
+      <ul>
+        <li>Transcribed from the <em>Oklahoma Academic Standards for Computer Science</em> (February 2023). Check the official document from the Oklahoma State Department of Education for the authoritative text.</li>
+        <li>Standard IDs read as grade, concept, subconcept, number. For example, <b>3.AP.PD.02</b> is Grade 3, Algorithms &amp; Programming, Program Development, standard 02. High school IDs start with L1 (Grades 9–10) or L2 (Grades 11–12).</li>
+        <li>The order of standards within a grade is not a teaching sequence.</li>
+        <li>Grades 6–8 <b>Variables</b>, High School Level 2 <b>Devices</b>, and High School Level 2 <b>Social Interactions</b> have no new standards. Students continue to apply the standards and practices from earlier grade levels.</li>
+        <li>Additional <b>Modularity</b> and <b>Culture</b> standards begin in Grade 3. Additional <b>Social Interactions</b> standards begin in Grade 3. Additional <b>Algorithms</b> standards begin in High School Level 2.</li>
+        <li>The practices listed on each standard are the ones the document connects to that standard. Where the document shows one practice line under a group of grades, it is applied to each grade in the group.</li>
+        <li>The Progression view lists standards that share the same concept, subconcept, and number across grades. Where the document adds standards at a later grade (such as Modularity .02 in Grade 3), the progression starts there.</li>
+      </ul>
+    </details>
+  </main>
+</div>
+
+<script>
+/* ---------- Reference data ---------- */
+const CONCEPTS = {
+  CS:{name:'Computing Systems'},
+  NI:{name:'Networks & the Internet'},
+  DA:{name:'Data Analysis'},
+  AP:{name:'Algorithms & Programming'},
+  IC:{name:'Impacts of Computing'}
+};
+const SUBS = {
+  CS:{D:'Devices',HS:'Hardware & Software',T:'Troubleshooting'},
+  NI:{NCO:'Network Communication & Organization',CY:'Cybersecurity'},
+  DA:{S:'Storage',CVT:'Collection, Visualization, & Transformation',IM:'Inference & Models'},
+  AP:{A:'Algorithms',V:'Variables',C:'Control',M:'Modularity',PD:'Program Development'},
+  IC:{CU:'Culture',SI:'Social Interactions',SLE:'Internet Safety, Law, & Ethics'}
+};
+const PRACTICES = {
+  CA:{name:'Collaborating Around Computing',desc:'Work in pairs and on teams to perform computational tasks.'},
+  CM:{name:'Communicating About Computing',desc:'Express and exchange ideas with others; write clear comments and document work.'},
+  CR:{name:'Creating Computational Artifacts',desc:'Develop programs, simulations, visualizations, animations, robotic systems, and apps.'},
+  AB:{name:'Developing and Using Abstractions',desc:'Identify patterns and create generalizations to manage complexity.'},
+  PE:{name:'Developing a Productive Computing Environment',desc:'Consider the needs of different users to produce accessible, usable artifacts.'},
+  RP:{name:'Recognizing and Defining Computational Problems',desc:'Define problems, break them into parts, and decide whether computation is appropriate.'},
+  TR:{name:'Testing and Refining Computational Artifacts',desc:'Debug, compare actual and intended outcomes, and improve artifacts.'}
+};
+const GRADES = ['K','1','2','3','4','5','6','7','8','L1','L2'];
+const GRADE_LABEL = {K:'Kindergarten','1':'Grade 1','2':'Grade 2','3':'Grade 3','4':'Grade 4','5':'Grade 5','6':'Grade 6','7':'Grade 7','8':'Grade 8',L1:'High School Level 1 (Grades 9–10)',L2:'High School Level 2 (Grades 11–12)'};
+const GRADE_SHORT = {K:'K','1':'1','2':'2','3':'3','4':'4','5':'5','6':'6','7':'7','8':'8',L1:'L1 (9–10)',L2:'L2 (11–12)'};
+const BANDS = [
+  {label:'K–2',grades:['K','1','2']},
+  {label:'3–5',grades:['3','4','5']},
+  {label:'6–8',grades:['6','7','8']},
+  {label:'High School',grades:['L1','L2']}
+];
+const CONCEPT_ORDER = Object.keys(CONCEPTS);
+
+/* ---------- Standards: ID | practices | text ---------- */
+const RAW = `
+K.CS.D.01|PE|With guidance, follow directions and start to make appropriate choices to use computing devices to perform a variety of tasks.
+1.CS.D.01|PE|With guidance, select and use a computing device to perform a variety of tasks for an intended outcome.
+2.CS.D.01|PE|Select and use appropriate computing devices or software to perform a variety of tasks for an intended outcome.
+3.CS.D.01|PE|Select and use computing systems to perform a variety of tasks for an intended outcome.
+4.CS.D.01|PE|Select and use appropriate computing systems to perform a variety of tasks for an intended outcome while recognizing that users have different needs for the technology they use.
+5.CS.D.01|PE|Select and use the most efficient computing systems to perform a variety of tasks for an intended outcome while recognizing that users have different needs for the technology they use.
+K.CS.HS.01|CM|Use appropriate terminology to locate and identify common computing devices and components in a variety of environments (e.g., desktop computer, laptop computer, tablet device, monitor, keyboard, mouse, printer).
+1.CS.HS.01|CM|Use appropriate terminology in naming and describing the function of common computing devices and components (e.g., mouse is used to control the cursor).
+2.CS.HS.01|CM|Identify the components of a computing system and what the basic functions are (e.g., hard drive and memory) as well as peripherals (e.g., printers, scanners, external hard drives) and external storage features and their uses (e.g., cloud storage).
+3.CS.HS.01|AB|Model how information flows through hardware and software to accomplish tasks.
+4.CS.HS.01|AB|Model that information is translated, transmitted, and processed in order to flow through hardware and software.
+5.CS.HS.01|AB|Model that information is translated into bits to transmit and process between hardware and software to accomplish tasks.
+K.CS.T.01|CM,TR|Recognize that computing systems might not work as expected and, with guidance, use accurate terminology to identify simple hardware or software problems (e.g., volume turned down on headphones, monitor turned off).
+1.CS.T.01|CM,TR|Identify, using accurate terminology, simple hardware and software problems that may occur during use (e.g., program is not working as expected, no sound is coming from the device, caps lock turned on).
+2.CS.T.01|CM,TR|Identify, using accurate terminology, simple hardware and software problems that may occur during use (e.g., program is not working as expected, no sound is coming from the device, caps lock turned on) and discuss problems with peers and adults.
+3.CS.T.01|CM,TR|Identify, using accurate terminology, simple hardware and software problems that may occur during everyday use, discuss problems with peers and adults, and apply strategies for solving these problems (e.g., refresh screen, closing/reopening an application or file).
+4.CS.T.01|CM,TR|Identify, using accurate terminology, simple hardware and software problems that may occur during everyday use, discuss problems with peers and adults, and apply strategies for solving these problems (e.g., rebooting the device, force shut down).
+5.CS.T.01|CM,TR|Identify, using accurate terminology, simple hardware and software problems that may occur during everyday use. Discuss problems with peers and adults, apply strategies for solving these problems and explain why the strategies should work.
+K.NI.NCO.01|AB|Recognize that computing devices can be connected together.
+1.NI.NCO.01|AB|Recognize that by connecting computing devices together, they can share information (e.g., remote storage, printing, the Internet).
+2.NI.NCO.01|AB|Recognize that computing devices can be connected in a variety of ways.
+3.NI.NCO.01|AB|Recognize that information is sent and received over physical or wireless paths.
+4.NI.NCO.01|AB|Explain how information is sent and received across physical or wireless paths (e.g., It is broken down into smaller pieces called packets and transmitted from one location to another).
+5.NI.NCO.01|AB|Model how information is broken down into packets (i.e., smaller pieces), transmitted through multiple devices over networks and the Internet, and reassembled at the destination.
+K.NI.CY.01|CM|Discuss what passwords are and why we do not share them with others. With guidance, use passwords to access computing devices.
+1.NI.CY.01|CM|Identify what passwords are; explain why they are not shared and discuss what makes a password strong. Independently, use passwords to access computing devices.
+2.NI.CY.01|CM|Explain what passwords are, why we use them, and use strong passwords to protect computing devices and information from unauthorized access.
+3.NI.CY.01|RP|Identify problems that relate to inappropriate use of computing devices and networks.
+4.NI.CY.01|RP|Identify and explain issues related to responsible use of technology and information, and describe personal consequences of inappropriate use.
+5.NI.CY.01|RP|Discuss real-world cybersecurity problems and identify strategies for how personal information can be protected.
+K.DA.S.01|AB|With guidance, locate, open, modify, and save an existing file with a computing device.
+1.DA.S.01|AB|With guidance locate, open, modify and save an existing file, use appropriate file-naming conventions, and recognize that the file exists within an organizational structure (e.g., drive, folder, file).
+2.DA.S.01|AB|With guidance, develop and modify an organizational structure by creating, copying, moving, and deleting files and folders.
+3.DA.S.01|AB|Recognize that different types of information are stored in different formats that have associated programs (e.g., documents open in a word processor) and varied storage requirements.
+4.DA.S.01|AB|Choose different storage locations (physical, shared, or cloud) based on the type of file, storage requirements (file size, availability, available memory), and sharing requirements.
+5.DA.S.01|AB|Evaluate trade-offs, including availability and quality, based on the type of file, storage requirements (e.g., file size, availability, available memory), and sharing requirements.
+K.DA.CVT.01|CM,AB|With guidance, collect data and present it visually.
+1.DA.CVT.01|CM,AB|With guidance, collect data and present it two different ways.
+2.DA.CVT.01|CM,AB|With guidance, collect and present the same data in various visual formats.
+3.DA.CVT.01|CM|Collect and organize data in various visual formats.
+4.DA.CVT.01|CM|Organize and present collected data visually to highlight comparisons.
+5.DA.CVT.01|CM|Organize and present collected data to highlight comparisons and support a claim.
+K.DA.IM.01|AB|With guidance, draw conclusions based on pictographs, real-object graphs, or patterns.
+1.DA.IM.01|AB|With guidance, identify and interpret data from a chart, bar graph, or pictograph (visualization) in order to draw conclusions, with or without a computing device.
+2.DA.IM.01|AB|With guidance, construct and interpret data with up to four categories and present it in a chart, bar graph, or pictograph (visualization) in order to draw conclusions with or without a computing device.
+3.DA.IM.01|CM|Utilize data to make predictions and discuss whether there is adequate data to make reliable predictions.
+4.DA.IM.01|CM|Utilize data to create models, answer investigative questions, and make predictions.
+5.DA.IM.01|CM|Determine how the accuracy of conclusions is influenced by the amount of data collected.
+K.AP.A.01|AB|With guidance, model daily processes and follow algorithms (sets of step-by-step instructions) to complete tasks verbally, kinesthetically, with robot devices, or a programming language.
+1.AP.A.01|AB|With guidance, model daily processes and follow algorithms (sets of step-by-step instructions) to complete tasks verbally, kinesthetically, with robot devices, or a programming language.
+2.AP.A.01|AB|With guidance, model daily processes by creating and following algorithms (sets of step-by-step instructions) to complete tasks verbally, kinesthetically, with robot devices, or a programming language.
+3.AP.A.01|RP,TR|Model and compare multiple algorithms for the same task.
+4.AP.A.01|RP,TR|Model, compare, and refine multiple algorithms for the same task.
+5.AP.A.01|RP,TR|Model, compare and refine multiple algorithms for the same task and determine which is the most efficient.
+K.AP.V.01|AB|With guidance, recognize that computers represent different types of data using numbers or other symbols.
+1.AP.V.01|AB|With guidance, model the way that a program accesses stored data using a variable name.
+2.AP.V.01|AB|Model the way a computer program stores, accesses, and manipulates data that is represented as a variable.
+3.AP.V.01|CR|Create programs that use variables to store and modify grade level appropriate data.
+4.AP.V.01|CR|Create programs that use variables to store and modify grade level appropriate data.
+5.AP.V.01|CR|Create programs that use variables to store and modify grade level appropriate data.
+K.AP.C.01|CR|With guidance, independently or collaboratively create programs to accomplish tasks using a programming language, robot device, or unplugged activity that includes sequencing (i.e., emphasizing the beginning, middle, and end).
+1.AP.C.01|CR|With guidance, independently or collaboratively create programs to accomplish tasks using a programming language, robot device, or unplugged activity that includes sequencing and repetition.
+2.AP.C.01|CR|With guidance, independently and collaboratively create programs to accomplish tasks using a programming language, robot device, or unplugged activity that includes sequencing and repetition.
+3.AP.C.01|CR|Create programs using a programming language that utilize sequencing, repetition, conditionals, and variables to solve a problem or express ideas both independently and collaboratively.
+4.AP.C.01|CR|Create programs using a programming language that utilize sequencing, repetition, conditionals and variables; using math operations manipulate values to solve a problem or express ideas both independently and collaboratively.
+5.AP.C.01|CR|Create programs using a programming language that utilize sequencing, repetition, conditionals, event handlers and variables using math operations to manipulate values to solve a problem or express ideas both independently and collaboratively.
+K.AP.M.01|RP|With guidance, decompose (break down) the steps needed to solve a simple problem.
+1.AP.M.01|RP|Decompose (break down) the steps needed to solve a simple problem.
+2.AP.M.01|RP|With guidance, decompose (break down) the steps needed to solve a problem into a precise sequence of instructions.
+3.AP.M.01|RP|Decompose (break down) the steps needed to solve a problem into a precise sequence of instructions.
+4.AP.M.01|RP|Decompose (break down) large problems into smaller, manageable subproblems to facilitate the program development process.
+5.AP.M.01|RP|Decompose (break down) large problems into smaller, manageable subproblems and then into a precise sequence of instructions.
+3.AP.M.02|CR|With grade appropriate complexity, modify, remix, or incorporate portions of an existing program into one's own work, to develop something new or add more advanced features.
+4.AP.M.02|CR|With grade appropriate complexity, modify, remix, or incorporate portions of an existing program into one's own work, to develop something new or add more advanced features.
+5.AP.M.02|CR|With grade appropriate complexity, modify, remix, or incorporate portions of an existing program into one's own work, to develop something new or add more advanced features.
+K.AP.PD.01|CM,CR|With guidance, create a grade-level appropriate artifact to illustrate thoughts, ideas, or stories in a sequential manner (e.g., story map, storyboard, and sequential graphic organizer).
+1.AP.PD.01|CM,CR|Independently or with guidance, create a grade-level appropriate artifact to illustrate thoughts, ideas, or stories in a sequential (step-by-step) manner (e.g., story map, storyboard, and sequential graphic organizer).
+2.AP.PD.01|CM,CR|Independently or with guidance, create a grade-level appropriate artifact to illustrate thoughts, ideas, or stories in a sequential manner (e.g., story map, storyboard, and sequential graphic organizer).
+3.AP.PD.01|CM,CR|Use an iterative process to plan the development of a program while solving simple problems.
+4.AP.PD.01|CM,CR|Use an iterative process to plan the development of a program that includes user preferences while solving simple problems.
+5.AP.PD.01|CR,PE|Use an iterative process to plan the development of a program that includes others' perspectives and user preferences while solving simple problems.
+K.AP.PD.02|CM|Independently or with guidance give credit to ideas, creations and solutions of others while developing algorithms.
+1.AP.PD.02|CM|Independently or with guidance give credit to ideas, creations and solutions of others while writing and/or developing programs.
+2.AP.PD.02|CM|Give credit to ideas, creations and solutions of others while writing and developing programs.
+3.AP.PD.02|CM,CR|Observe intellectual property rights and give appropriate credit when creating programs using original code or code reuse.
+4.AP.PD.02|CM,CR|Observe intellectual property rights and give appropriate credit when creating programs using original code or code reuse.
+5.AP.PD.02|CM,CR|Observe intellectual property rights and give appropriate credit when creating programs using original code or code reuse.
+K.AP.PD.03|TR|With guidance, independently or collaboratively debug algorithms using a programming language and/or unplugged activity that includes sequencing.
+1.AP.PD.03|TR|With guidance, independently or collaboratively debug programs using a programming language and/or unplugged activity that includes sequencing and repetition.
+2.AP.PD.03|TR|With guidance, independently and collaboratively debug programs using a programming language and/or unplugged activity that includes sequencing and repetition.
+3.AP.PD.03|TR|Analyze and debug a program that includes sequencing, repetition, and variables in a programming language.
+4.AP.PD.03|TR|Analyze, create, and debug a program that includes sequencing, repetition, conditionals, and variables in a programming language.
+5.AP.PD.03|TR|Analyze, create, and debug a program that includes sequencing, repetition, conditionals, and variables in a programming language.
+K.AP.PD.04|CM|Use correct terminology (beginning, middle, end) in the development of an algorithm to solve a simple problem.
+1.AP.PD.04|CM|Use correct terminology (e.g., first, second, third) and explain the choices made in the development of an algorithm to solve a simple problem.
+2.AP.PD.04|CM|Use correct terminology (e.g., debug, program input/output, code) to explain the development of an algorithm to solve a problem in an unplugged activity, hands on manipulatives, or a programming language.
+3.AP.PD.04|CM|Communicate and explain program development choices using comments, presentations, and demonstrations.
+4.AP.PD.04|CM|Communicate and explain program development choices using comments, presentations, and demonstrations.
+5.AP.PD.04|CM|Communicate and explain program development choices using comments, presentations, and demonstrations.
+K.IC.CU.01|CM|Identify different ways in which types of technologies are used in your daily life.
+1.IC.CU.01|CM|Identify how people use different types of technologies in their daily work and personal lives.
+2.IC.CU.01|CM|Compare how people live and work before and after the implementation or adoption of new technology.
+3.IC.CU.01|RP|Identify computing technologies that have changed the world, and express how those technologies influence and are influenced by cultural practices.
+4.IC.CU.01|RP|Give examples of computing technologies that have changed the world, and express how those technologies influence and are influenced by cultural practices.
+5.IC.CU.01|RP|Give examples and explain how computing technologies have changed the world, and express how computing technologies influence and are influenced by cultural practices within your community.
+3.IC.CU.02|PE|Consider users' backgrounds and ability levels and identify how computing devices have built-in features for increasing accessibility to these users.
+4.IC.CU.02|PE|Consider a variety of users' backgrounds and needs to brainstorm ways to improve computing devices to increase accessibility.
+5.IC.CU.02|PE|Develop, test, and refine digital artifacts to improve accessibility and usability.
+K.IC.SI.01|CA|With guidance, identify appropriate behavior while participating in an online environment.
+1.IC.SI.01|CA|With guidance, identify appropriate and inappropriate behavior, act responsibly, and know how to report concerns while participating in an online community.
+2.IC.SI.01|CA|With guidance, develop a code of conduct, explain, and practice grade-level appropriate behavior and responsibilities while participating in an online community. Identify and report inappropriate behavior.
+3.IC.SI.01|CA|Develop a code of conduct, explain, and practice grade-level appropriate behavior and responsibilities while participating in an online community. Identify and report inappropriate behavior.
+4.IC.SI.01|CA|Develop a code of conduct, explain, and practice grade-level appropriate behavior and responsibilities while participating in an online community. Identify and report inappropriate behavior.
+5.IC.SI.01|CA|Develop a code of conduct, explain, and practice grade-level appropriate behavior and responsibilities while participating in an online community. Identify and report inappropriate behavior.
+3.IC.SI.02|PE|Identify how computational artifacts may be, or have been, improved to incorporate different perspectives.
+4.IC.SI.02|PE|As a team, consider each others' perspectives on improving a computational artifact.
+5.IC.SI.02|PE|As a team, collaborate with outside resources (other grade levels, online spaces) to include different perspectives to improve computational artifacts.
+K.IC.SLE.01|CM|With guidance, identify ways to stay safe online.
+1.IC.SLE.01|CM|Identify ways to stay safe online.
+2.IC.SLE.01|CM|Individually and collaboratively identify ways to stay safe online.
+3.IC.SLE.01|CM|Identify types of digital data that may have intellectual property rights that prevent copying or require attribution.
+4.IC.SLE.01|CM|Discuss the social impact of violating intellectual property rights.
+5.IC.SLE.01|CM|Observe intellectual property rights and give appropriate credit when using resources.
+6.CS.D.01|RP|Evaluate existing computing devices and recommend improvements to the design based on personal interaction with the device.
+7.CS.D.01|RP|Evaluate existing computing devices and recommend improvements to the design based on how other users interact with the device.
+8.CS.D.01|RP|Develop and implement a process to evaluate existing computing devices and recommend improvements to the design based on how other users interact with the device.
+6.CS.HS.01|CR|Model multiple methods of combining hardware and software to collect and exchange data.
+7.CS.HS.01|CR|Evaluate and recommend improvements to software and hardware combinations used to collect and exchange data.
+8.CS.HS.01|CR|Design and refine projects that combine hardware and software components to collect and exchange data.
+6.CS.T.01|TR|Identify and resolve software and hardware problems with computing devices and their components involving settings and connections.
+7.CS.T.01|TR|Identify and resolve complex software and hardware problems with computing devices and their components utilizing strategies such as developing and analyzing flow diagrams.
+8.CS.T.01|TR|Systematically identify, resolve, and document complex software and hardware problems with computing devices and their components.
+6.NI.NCO.01|AB|Model a simple protocol for transferring information using packets.
+7.NI.NCO.01|AB|Explain protocols and their importance to data transmission; model how a system responds when a packet is lost and the effect it has on the transferred information.
+8.NI.NCO.01|AB|Explain protocols and their importance to data transmission; model how packets are broken down into smaller pieces and how they are delivered.
+6.NI.CY.01|CM|Identify existing cybersecurity concerns with the Internet and systems it uses.
+7.NI.CY.01|CM|Explain how to protect electronic information, both physical (e.g., hard drive) and digital; identify cybersecurity concerns and options to address issues with the Internet and the systems it uses.
+8.NI.CY.01|CM|Evaluate physical and digital procedures that could be implemented to protect electronic data/information; explain the impacts of cybersecurity threats and attacks.
+6.NI.CY.02|AB|Explain the importance of secured websites and describe how encryption works.
+7.NI.CY.02|AB|Identify and explain methods of encryption used to ensure and secure the transmission of information.
+8.NI.CY.02|AB|Compare the advantages and disadvantages of methods of encryption to model the secure transmission of information.
+6.DA.S.01|AB|Create multiple representations of the same data.
+7.DA.S.01|AB|Create and compare multiple representations of the same data.
+8.DA.S.01|AB|Analyze multiple methods of representing the same data and justify the most appropriate method for representing data.
+6.DA.CVT.01|TR|Collect data using computational tools and transform the data to make it more useful.
+7.DA.CVT.01|TR|Collect data using computational tools and transform the data to make it more useful and reliable.
+8.DA.CVT.01|TR|Develop, implement, and refine a process that utilizes computational tools to collect and transform data to make it more useful and reliable.
+6.DA.IM.01|AB|Use data to highlight or propose cause-and-effect relationships, predict outcomes, and communicate ideas.
+7.DA.IM.01|AB|Discuss the accuracy of a model representing a system by comparing the model's generated results with observed data from the modeled system.
+8.DA.IM.01|CR,AB|Refine computational models based on the data generated by the models.
+6.AP.A.01|AB|Use an existing algorithm in natural language or pseudocode to solve complex problems.
+7.AP.A.01|AB|Select and modify an existing algorithm in natural language or pseudocode to solve complex problems.
+8.AP.A.01|AB|Design algorithms in natural language, flow and control diagrams, comments within code, and/or pseudocode to solve complex problems.
+6.AP.C.01|CR|Develop programs that utilize combinations of repetition, conditionals, and the manipulation of variables representing different data types.
+7.AP.C.01|CR|Develop programs that utilize combinations of repetition, compound conditionals, and the manipulation of variables representing different data types.
+8.AP.C.01|CR|Develop programs that utilize combinations of nested loops, compound conditionals, procedures without parameters, and the manipulation of variables representing different data types.
+6.AP.M.01|CR|Decompose problems into parts to facilitate the design, implementation, and review of programs.
+7.AP.M.01|CR|Decompose problems into parts to facilitate the design, implementation, and review of increasingly complex programs.
+8.AP.M.01|CR|Decompose problems and subproblems into parts to facilitate the design, implementation, and review of complex programs.
+6.AP.PD.01|CA,PE|Seek and incorporate feedback from team members to refine a solution to a problem.
+7.AP.PD.01|CA,PE|Seek and incorporate feedback from team members and users to refine a solution to a problem.
+8.AP.PD.01|CA,PE|Seek and incorporate feedback from team members and users to refine a solution to a problem that meets the needs of different users.
+6.AP.PD.02|CR,CM,AB|Incorporate existing code, media, and libraries into original programs and give attribution.
+7.AP.PD.02|CR,CM,AB|Incorporate existing code, media, and libraries into original programs of increasing complexity and give attribution.
+8.AP.PD.02|CR,CM,AB|Incorporate existing code, media, and libraries into original programs of increasing complexity and give attribution.
+6.AP.PD.03|TR|Test and refine programs using teacher provided inputs.
+7.AP.PD.03|TR|Test and refine programs using a variety of student created inputs.
+8.AP.PD.03|TR|Systematically test and refine programs using a range of student created inputs.
+6.AP.PD.04|CA|Break down tasks and follow an individual timeline when developing a computational artifact.
+7.AP.PD.04|CA|Distribute tasks and maintain a project timeline when collaboratively developing computational artifacts.
+8.AP.PD.04|CA|Model effective communication between participants and demonstrate successful collaboration when developing computational artifacts.
+6.AP.PD.05|CM|Document text-based programs in order to make them easier to follow, test, and debug.
+7.AP.PD.05|CM|Document text-based programs of increasing complexity in order to make them easier to follow, test, and debug.
+8.AP.PD.05|CM|Document text-based programs of increasing complexity in order to make them easier to follow, test, and debug.
+6.IC.CU.01|CM|Explain how computing impacts people's everyday activities and careers.
+7.IC.CU.01|CM|Describe the trade-offs associated with computing technologies (e.g., automation), explaining their effects on economies and society.
+8.IC.CU.01|CM|Explore careers related to the field of computer science, and explain how computing impacts innovation in various career fields.
+6.IC.CU.02|PE|Identify and discuss the technology proficiencies needed in the classroom and the workplace, and how to meet the needs of different users.
+7.IC.CU.02|PE|Identify real-world problems in relation to the distribution of computing resources in society.
+8.IC.CU.02|PE|Evaluate and improve the design of existing technologies to meet the needs of different users and increase accessibility and usability.
+6.IC.SI.01|CA|Describe and use safe, appropriate, and responsible practices (i.e., netiquette) when participating in online communities.
+7.IC.SI.01|CA|Describe and use safe, appropriate, and responsible practices (i.e., netiquette) when participating in online communities and evaluate how technology can be used to distort, exaggerate, and misrepresent information.
+8.IC.SI.01|CA|Describe and use safe, appropriate, and responsible practices (i.e., netiquette) when participating in online communities and understand the impact of not using safe, appropriate, and responsible practices.
+6.IC.SI.02|CA,CR|Individually and collaboratively develop and conduct an online survey that seeks input from a broad audience. Use the survey to evaluate whether it is feasible to solve a problem computationally.
+7.IC.SI.02|CA,CR|Individually and collaboratively use advanced tools to design and create online content (e.g., digital portfolio, multimedia, blog, web page).
+8.IC.SI.02|CA,CR|Communicate and publish key ideas and details individually or collaboratively in a way that informs, persuades, and/or entertains using a variety of digital tools and media-rich resources.
+6.IC.SLE.01|CM|Differentiate between appropriate and inappropriate content on the Internet, and identify the characteristics of unethical and illegal online behavior.
+7.IC.SLE.01|CM|Model the connection between the longevity of data on the Internet, personal online identity, and personal privacy.
+8.IC.SLE.01|CM|Discuss the social impacts and ethical considerations associated with cybersecurity, including the positive and malicious purposes of hacking.
+L1.CS.D.01|AB|Model how abstractions hide the underlying implementation details of computing systems embedded in everyday objects.
+L1.CS.HS.01|AB|Analyze the levels of abstraction and interactions between application software, system software, and hardware.
+L2.CS.HS.01|CM|Identify and categorize the roles of a variety of operating system software.
+L1.CS.T.01|TR|Develop and apply criteria for the systematic discovery of errors and systematic strategies for the correction of errors in computing systems.
+L2.CS.T.01|CM|Illustrate how understanding the ways hardware components facilitate logic, input, output, and storage in computing systems will support troubleshooting.
+L1.NI.NCO.01|AB|Evaluate the scalability and reliability of networks by identifying and illustrating the basic components of computer networks (e.g., routers, switches, servers, etc.) and network protocols (e.g., IP, DNS).
+L2.NI.NCO.01|CM|Describe the issues that impact network functionality (e.g., bandwidth, load, latency, topology).
+L1.NI.CY.01|AB|Compare physical and cybersecurity measures by evaluating trade-offs between the usability and security of a computing system and the risks of an attack.
+L2.NI.CY.01|CM|Compare and refine ways in which software developers protect devices and information from unauthorized access.
+L1.NI.CY.02|RP|Recommend security measures to address various scenarios based on information security principles.
+L1.NI.CY.03|CM|Explain trade-offs when selecting and implementing cybersecurity recommendations from multiple perspectives, such as the user, enterprise, and government.
+L1.DA.S.01|AB|Convert and compare different bit representations of data types, such as characters, numbers, and images.
+L1.DA.S.02|RP|Evaluate the trade-offs in how data is organized and stored digitally.
+L1.DA.CVT.01|AB|Use tools and techniques to locate, collect, and create visualizations of small and large-scale data sets (e.g., paper surveys and online data sets).
+L2.DA.CVT.01|AB|Use data analysis tools and techniques to identify patterns from complex real-world data.
+L2.DA.CVT.02|CM|Generate data sets that use a variety of data collection tools and analysis techniques to support a claim and/or communicate information.
+L1.DA.IM.01|AB|Illustrate and explain the relationships between collected data elements using computational models.
+L2.DA.IM.01|AB|Use models and simulations to help plan, conduct, and refine investigations.
+L1.AP.A.01|CR|Create a prototype that uses algorithms (e.g., searching, sorting, finding shortest distance) to provide a possible solution for a real-world problem.
+L2.AP.A.01|CM|Model and use appropriate terminology to describe how artificial intelligence algorithms drive many software and physical systems (e.g., autonomous robots, pattern recognition, text analysis).
+L2.AP.A.02|CR|Develop an artificial intelligence algorithm to play a game against a human opponent or solve a real-world problem.
+L2.AP.A.03|AB|Critically examine and trace classic algorithms (e.g., selection sort, insertion sort, binary search, linear search).
+L2.AP.A.04|AB|Evaluate algorithms (e.g., sorting, searching) in terms of their efficiency and clarity.
+L1.AP.V.01|AB|Demonstrate the use of lists (e.g., arrays) to simplify solutions, generalizing computational problems instead of repeatedly using simple variables.
+L2.AP.V.01|AB|Compare and contrast data structures and their uses (e.g., lists, stacks, queues).
+L1.AP.C.01|RP|Justify the selection of specific control structures (e.g., sequence, conditionals, repetition, procedures) considering program efficiencies such as readability, performance, and memory usage.
+L2.AP.C.01|RP|Model the execution of repetition (e.g., loops, recursion) of an algorithm illustrating output and changes in values of named variables.
+L1.AP.M.01|RP|Decompose problems into procedures using systematic analysis and design.
+L2.AP.M.01|CR|Construct solutions to problems using student-created components (e.g., procedures, modules, objects).
+L1.AP.M.02|RP|Create computational artifacts by systematically organizing, manipulating and/or processing data.
+L2.AP.M.02|AB|Design or redesign a solution to a large-scale computational problem by identifying generalizable patterns.
+L2.AP.M.03|CR|Create programming solutions by reusing existing code (e.g., libraries, Application Programming Interface (APIs), code repositories).
+L1.AP.PD.01|CM|Create software that will provide solutions to a variety of users using a software development process.
+L2.AP.PD.01|CR|Create software that will provide solutions to a variety of users using multiple software development processes.
+L1.AP.PD.02|CM,CA|Evaluate a variety of software licensing schemes (e.g., open source, freeware, commercial) and discuss the advantages and disadvantages of each scheme in software development.
+L2.AP.PD.02|CM,CA|Design software in a project team environment using integrated development environments (IDEs), versioning systems, and collaboration systems.
+L1.AP.PD.03|TR|While working in a team, develop, test, and refine event-based programs that solve practical problems or allow self-expression.
+L2.AP.PD.03|CR|Develop programs for multiple computing platforms.
+L1.AP.PD.04|CM|Using visual aids and documentation, illustrate the design elements and data flow (e.g., flowcharts, pseudocode) of the development of a complex program.
+L2.AP.PD.04|TR|Systematically examine code for correctness, usability, readability, efficiency, portability, and scalability through peer review.
+L1.AP.PD.05|TR|Evaluate and refine computational artifacts to make them more user-friendly, efficient and/or accessible.
+L2.AP.PD.05|TR|Develop and use a series of test cases to verify that a program performs according to its design specifications.
+L2.AP.PD.06|CM|Explain security issues that might lead to compromised computer programs.
+L2.AP.PD.07|CR|Modify an existing program to add additional functionality and discuss intended and unintended implications (e.g., breaking other functionality).
+L1.IC.CU.01|CM|Evaluate the ways computing impacts personal, ethical, social, economic, and cultural practices.
+L2.IC.CU.01|CM|Evaluate the beneficial and harmful effects that computational artifacts and innovations have on society.
+L1.IC.CU.02|PE|Test and refine computational artifacts to ensure access to a variety of user audiences.
+L2.IC.CU.02|PE|Evaluate the impact of location and user audience on the distribution of computing resources in a global society.
+L1.IC.CU.03|RP|Demonstrate ways a given algorithm can help solve computational problems across disciplines.
+L2.IC.CU.03|CM|Design and implement a study that evaluates or predicts how creating, testing, and refining computational artifacts has revolutionized an aspect of our culture and how it might evolve (e.g., education, healthcare, art/entertainment, energy).
+L1.IC.SI.01|CA|Demonstrate and debate how computing increases and decreases connectivity and communication among people of various cultures.
+L1.IC.SLE.01|CM|Describe the beneficial and harmful effects that intellectual property laws can have on innovation.
+L2.IC.SLE.01|CM,RP|Debate laws and regulations that impact the development and use of software.
+L1.IC.SLE.02|CM|Describe and discuss the privacy concerns related to the large-scale collection and analysis of information about individuals (e.g., how websites collect and uses data) that may not be evident to users.
+L1.IC.SLE.03|CM|Evaluate the social and economic consequences of how law and ethics interact with digital aspects of privacy, data, property, information, and identity.
+`;
+
+const SUB_ORDER = {};
+Object.keys(SUBS).forEach(c => { SUB_ORDER[c] = Object.keys(SUBS[c]); });
+
+const STANDARDS = RAW.trim().split('\n').map(line => {
+  const parts = line.split('|');
+  const id = parts[0], ids = id.split('.');
+  return {
+    id, grade: ids[0], concept: ids[1], sub: ids[2], num: ids[3],
+    practices: parts[1] ? parts[1].split(',') : [],
+    text: parts.slice(2).join('|')
+  };
+});
+STANDARDS.forEach(s => {
+  s.subName = SUBS[s.concept][s.sub];
+  s.conceptName = CONCEPTS[s.concept].name;
+  s.gradeIdx = GRADES.indexOf(s.grade);
+  s.hay = (s.id + ' ' + s.text + ' ' + s.subName + ' ' + s.conceptName + ' ' + GRADE_LABEL[s.grade] + ' ' +
+           s.practices.map(p => PRACTICES[p].name).join(' ')).toLowerCase();
+});
+const BY_ID = {}; STANDARDS.forEach(s => BY_ID[s.id] = s);
+const BY_KEY = {};
+STANDARDS.forEach(s => { const k = s.concept + '.' + s.sub + '.' + s.num; (BY_KEY[k] = BY_KEY[k] || []).push(s); });
+Object.values(BY_KEY).forEach(a => a.sort((x, y) => x.gradeIdx - y.gradeIdx));
+
+/* ---------- State ---------- */
+const state = {
+  q: '', grades: new Set(), subs: new Set(), practices: new Set(),
+  sort: 'concept', pinnedOnly: false, progAll: false
+};
+const pins = new Set();
+const openProg = new Set();
+try { JSON.parse(localStorage.getItem('oascs-pins') || '[]').forEach(id => { if (BY_ID[id]) pins.add(id); }); } catch (e) {}
+function savePins() { try { localStorage.setItem('oascs-pins', JSON.stringify([...pins])); } catch (e) {} }
+
+/* ---------- Helpers ---------- */
+const $ = sel => document.querySelector(sel);
+const esc = t => String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const escRe = t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const words = () => state.q.toLowerCase().split(/\s+/).filter(Boolean);
+function hl(text) {
+  const w = words();
+  if (!w.length) return esc(text);
+  const re = new RegExp('(' + w.map(escRe).join('|') + ')', 'gi');
+  return text.split(re).map((part, i) => i % 2 ? '<mark>' + esc(part) + '</mark>' : esc(part)).join('');
+}
+function matches(s, skip) {
+  if (skip !== 'grades' && state.grades.size && !state.grades.has(s.grade)) return false;
+  if (skip !== 'subs' && state.subs.size && !state.subs.has(s.concept + '.' + s.sub)) return false;
+  if (skip !== 'practices' && state.practices.size && !s.practices.some(p => state.practices.has(p))) return false;
+  if (state.pinnedOnly && !pins.has(s.id)) return false;
+  const w = words();
+  for (const x of w) if (s.hay.indexOf(x) === -1) return false;
+  return true;
+}
+function cmp(a, b) {
+  const ci = CONCEPT_ORDER.indexOf(a.concept) - CONCEPT_ORDER.indexOf(b.concept);
+  const si = SUB_ORDER[a.concept].indexOf(a.sub) - (a.concept === b.concept ? SUB_ORDER[b.concept].indexOf(b.sub) : 0);
+  const ni = a.num.localeCompare(b.num);
+  if (state.sort === 'grade') return a.gradeIdx - b.gradeIdx || ci || si || ni;
+  return ci || si || ni || a.gradeIdx - b.gradeIdx;
+}
+const plural = (n, w) => n + ' ' + w + (n === 1 ? '' : 's');
+
+/* ---------- Build sidebar once ---------- */
+function buildSidebar() {
+  $('#bands').innerHTML = BANDS.map((b, i) =>
+    `<button class="chip band" data-act="band" data-i="${i}" aria-pressed="false">${esc(b.label)}</button>`).join('');
+  $('#gradeChips').innerHTML = GRADES.map(g =>
+    `<button class="chip" data-act="grade" data-v="${g}" aria-pressed="false" title="${esc(GRADE_LABEL[g])}">${esc(GRADE_SHORT[g])}<span class="n"></span></button>`).join('');
+  const colors = {CS:'var(--CS)',NI:'var(--NI)',DA:'var(--DA)',AP:'var(--AP)',IC:'var(--IC)'};
+  $('#subFilters').innerHTML = CONCEPT_ORDER.map(c => `
+    <div class="cgroup" style="--c:${colors[c]}">
+      <label class="opt chead"><input type="checkbox" data-act="concept" data-v="${c}"><span>${esc(CONCEPTS[c].name)}</span><span class="n" data-cn="${c}"></span></label>
+      <div class="subs">${SUB_ORDER[c].map(sb => `
+        <label class="opt"><input type="checkbox" data-act="sub" data-v="${c}.${sb}"><span>${esc(SUBS[c][sb])}</span><span class="n" data-sn="${c}.${sb}"></span></label>`).join('')}
+      </div>
+    </div>`).join('');
+  $('#practiceFilters').innerHTML = Object.keys(PRACTICES).map(p => `
+    <label class="opt" title="${esc(PRACTICES[p].desc)}"><input type="checkbox" data-act="practice" data-v="${p}"><span>${esc(PRACTICES[p].name)}</span><span class="n" data-pn="${p}"></span></label>`).join('');
+}
+
+function updateSidebar() {
+  // grades
+  const gm = STANDARDS.filter(s => matches(s, 'grades'));
+  document.querySelectorAll('#gradeChips .chip').forEach(b => {
+    const g = b.dataset.v, n = gm.filter(s => s.grade === g).length;
+    b.setAttribute('aria-pressed', state.grades.has(g));
+    b.querySelector('.n').textContent = n;
+    b.classList.toggle('zero', n === 0);
+  });
+  document.querySelectorAll('#bands .chip').forEach((b, i) => {
+    b.setAttribute('aria-pressed', BANDS[i].grades.every(g => state.grades.has(g)));
+  });
+  // subs and concepts
+  const sm = STANDARDS.filter(s => matches(s, 'subs'));
+  const subCount = {}, conCount = {};
+  sm.forEach(s => { const k = s.concept + '.' + s.sub; subCount[k] = (subCount[k] || 0) + 1; conCount[s.concept] = (conCount[s.concept] || 0) + 1; });
+  document.querySelectorAll('input[data-act="sub"]').forEach(cb => {
+    const n = subCount[cb.dataset.v] || 0;
+    cb.checked = state.subs.has(cb.dataset.v);
+    cb.parentElement.classList.toggle('zero', n === 0 && !cb.checked);
+    cb.parentElement.querySelector('.n').textContent = n;
+  });
+  document.querySelectorAll('input[data-act="concept"]').forEach(cb => {
+    const c = cb.dataset.v, keys = SUB_ORDER[c].map(x => c + '.' + x);
+    const on = keys.filter(k => state.subs.has(k)).length;
+    cb.checked = on === keys.length;
+    cb.indeterminate = on > 0 && on < keys.length;
+    cb.parentElement.querySelector('.n').textContent = conCount[c] || 0;
+    cb.parentElement.classList.toggle('zero', !(conCount[c]) && !on);
+  });
+  // practices
+  const pm = STANDARDS.filter(s => matches(s, 'practices'));
+  document.querySelectorAll('input[data-act="practice"]').forEach(cb => {
+    const n = pm.filter(s => s.practices.includes(cb.dataset.v)).length;
+    cb.checked = state.practices.has(cb.dataset.v);
+    cb.parentElement.classList.toggle('zero', n === 0 && !cb.checked);
+    cb.parentElement.querySelector('.n').textContent = n;
+  });
+}
+
+/* ---------- Render results ---------- */
+function cardHtml(s) {
+  const pinned = pins.has(s.id);
+  const open = state.progAll || openProg.has(s.id);
+  const tags = s.practices.map(p =>
+    `<button class="tag${state.practices.has(p) ? ' sel' : ''}" data-act="tag" data-v="${p}" title="${esc(PRACTICES[p].desc)} (click to filter)">${esc(PRACTICES[p].name)}</button>`).join('');
+  return `<article class="card" style="--c:var(--${s.concept})" id="s-${s.id}">
+    <header>
+      <span class="id">${hl(s.id)}</span>
+      <span class="meta">${esc(GRADE_LABEL[s.grade])} · ${esc(s.subName)}</span>
+      <span class="actions">
+        <button class="act" data-act="pin" data-id="${s.id}" aria-pressed="${pinned}">${pinned ? '★ Pinned' : '☆ Pin'}</button>
+        <button class="act" data-act="prog" data-id="${s.id}" aria-expanded="${open}">Progression</button>
+      </span>
+    </header>
+    <p class="text">${hl(s.text)}</p>
+    <div class="tags">${tags}</div>
+    ${open ? progHtml(s) : ''}
+  </article>`;
+}
+function progHtml(s) {
+  const list = BY_KEY[s.concept + '.' + s.sub + '.' + s.num] || [s];
+  return `<div class="prog"><h4>Progression across grades: ${esc(s.conceptName)}, ${esc(s.subName)}, standard ${esc(s.num)}</h4><ol>` +
+    list.map(x => `<li class="${x.id === s.id ? 'cur' : ''}" style="--c:var(--${x.concept})"><b>${esc(x.id)}</b><span>${esc(x.text)}</span></li>`).join('') +
+    `</ol></div>`;
+}
+
+function render() {
+  const list = STANDARDS.filter(s => matches(s)).sort(cmp);
+  $('#count').textContent = plural(list.length, 'standard') + ' shown of ' + STANDARDS.length;
+  const pb = $('#pinnedBtn');
+  pb.textContent = 'Pinned (' + pins.size + ')';
+  pb.setAttribute('aria-pressed', state.pinnedOnly);
+  pb.classList.toggle('on', state.pinnedOnly);
+  $('#csvPinnedBtn').disabled = pins.size === 0;
+  $('#clearPinsBtn').disabled = pins.size === 0;
+  $('#progBtn').textContent = state.progAll ? 'Close all progressions' : 'Open all progressions';
+  document.querySelectorAll('[data-act="sort"]').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === state.sort));
+
+  renderActive();
+  updateSidebar();
+
+  if (!list.length) {
+    $('#results').innerHTML = `<div class="empty"><p><strong>No standards match these filters.</strong></p><p>Remove a filter or clear the search to see more.</p><p><button class="btn" data-act="reset">Reset all filters</button></p></div>`;
+    return;
+  }
+  let html = '', lastC = '', lastS = '', lastG = '';
+  const counts = {};
+  list.forEach(s => {
+    const ck = s.concept, sk = s.concept + '.' + s.sub;
+    counts[ck] = (counts[ck] || 0) + 1; counts[sk] = (counts[sk] || 0) + 1; counts['g' + s.grade] = (counts['g' + s.grade] || 0) + 1;
+  });
+  list.forEach(s => {
+    if (state.sort === 'concept') {
+      if (s.concept !== lastC) { html += `<h2 class="ghead" style="--gc:var(--${s.concept})">${esc(s.conceptName)}<small>${plural(counts[s.concept], 'standard')}</small></h2>`; lastC = s.concept; lastS = ''; }
+      const sk = s.concept + '.' + s.sub;
+      if (sk !== lastS) { html += `<h3 class="shead">${esc(s.subName)}<small>${plural(counts[sk], 'standard')}</small></h3>`; lastS = sk; }
+    } else if (s.grade !== lastG) {
+      html += `<h2 class="ghead">${esc(GRADE_LABEL[s.grade])}<small>${plural(counts['g' + s.grade], 'standard')}</small></h2>`; lastG = s.grade;
+    }
+    html += cardHtml(s);
+  });
+  $('#results').innerHTML = html;
+}
+
+function renderActive() {
+  const pills = [];
+  if (state.q.trim()) pills.push(['q', '', 'Search: ' + state.q.trim()]);
+  GRADES.filter(g => state.grades.has(g)).forEach(g => pills.push(['grade', g, GRADE_LABEL[g]]));
+  [...state.subs].forEach(k => { const [c, s] = k.split('.'); pills.push(['sub', k, SUBS[c][s]]); });
+  [...state.practices].forEach(p => pills.push(['practice', p, PRACTICES[p].name]));
+  if (state.pinnedOnly) pills.push(['pinnedOnly', '', 'Pinned only']);
+  $('#active').innerHTML = pills.map(p =>
+    `<span class="pill">${esc(p[2])}<button data-act="remove" data-k="${p[0]}" data-v="${esc(p[1])}" aria-label="Remove filter ${esc(p[2])}">×</button></span>`).join('');
+}
+
+/* ---------- Actions ---------- */
+function toggle(set, v, on) { if (on === undefined) on = !set.has(v); on ? set.add(v) : set.delete(v); }
+
+function csvFor(list) {
+  const q = v => '"' + String(v).replace(/"/g, '""') + '"';
+  const rows = [['Standard ID','Grade or level','Concept','Subconcept','Standard','CS practices'].map(q).join(',')];
+  list.forEach(s => rows.push([s.id, GRADE_LABEL[s.grade], s.conceptName, s.subName, s.text, s.practices.map(p => PRACTICES[p].name).join('; ')].map(q).join(',')));
+  return '\ufeff' + rows.join('\r\n');
+}
+function download(name, text) {
+  try {
+    const blob = new Blob([text], {type: 'text/csv;charset=utf-8'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  } catch (e) {
+    alert('Your browser blocked the download. Open this page in its own tab and try again.');
+  }
+}
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act]');
+  if (!el) return;
+  const act = el.dataset.act, v = el.dataset.v;
+  switch (act) {
+    case 'reset': state.q = ''; $('#q').value = ''; state.grades.clear(); state.subs.clear(); state.practices.clear(); state.pinnedOnly = false; break;
+    case 'toggleSide': {
+      const open = $('#side').classList.toggle('open');
+      el.textContent = open ? 'Hide filters' : 'Show filters'; el.setAttribute('aria-expanded', open); return;
+    }
+    case 'band': {
+      const g = BANDS[+el.dataset.i].grades, all = g.every(x => state.grades.has(x));
+      g.forEach(x => toggle(state.grades, x, !all)); break;
+    }
+    case 'grade': toggle(state.grades, v); break;
+    case 'tag': toggle(state.practices, v); break;
+    case 'sort': state.sort = v; break;
+    case 'pinnedOnly': state.pinnedOnly = !state.pinnedOnly; break;
+    case 'progAll': state.progAll = !state.progAll; openProg.clear(); break;
+    case 'pin': { const id = el.dataset.id; toggle(pins, id); savePins(); if (!pins.size) state.pinnedOnly = false; break; }
+    case 'prog': {
+      const id = el.dataset.id;
+      if (state.progAll) { state.progAll = false; STANDARDS.forEach(s => openProg.add(s.id)); }
+      toggle(openProg, id); break;
+    }
+    case 'clearPins': pins.clear(); savePins(); state.pinnedOnly = false; break;
+    case 'remove': {
+      const k = el.dataset.k;
+      if (k === 'q') { state.q = ''; $('#q').value = ''; }
+      else if (k === 'grade') state.grades.delete(v);
+      else if (k === 'sub') state.subs.delete(v);
+      else if (k === 'practice') state.practices.delete(v);
+      else if (k === 'pinnedOnly') state.pinnedOnly = false;
+      break;
+    }
+    case 'csvShown': download('oas-cs-standards-shown.csv', csvFor(STANDARDS.filter(s => matches(s)).sort(cmp))); return;
+    case 'csvPinned': download('oas-cs-standards-pinned.csv', csvFor(STANDARDS.filter(s => pins.has(s.id)).sort(cmp))); return;
+    case 'print': window.print(); return;
+    default: return; // checkboxes handled on change
+  }
+  render();
+});
+
+document.addEventListener('change', e => {
+  const el = e.target;
+  if (!el.matches('input[type="checkbox"][data-act]')) return;
+  const act = el.dataset.act, v = el.dataset.v;
+  if (act === 'sub') toggle(state.subs, v, el.checked);
+  else if (act === 'concept') SUB_ORDER[v].forEach(x => toggle(state.subs, v + '.' + x, el.checked));
+  else if (act === 'practice') toggle(state.practices, v, el.checked);
+  render();
+});
+
+let timer;
+$('#q').addEventListener('input', e => {
+  clearTimeout(timer);
+  timer = setTimeout(() => { state.q = e.target.value; render(); }, 120);
+});
+
+buildSidebar();
+render();
+</script>
+</body>
+</html>
